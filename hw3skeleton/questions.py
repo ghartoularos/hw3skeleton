@@ -298,38 +298,38 @@ def p2q1(randompairs=10, q3=False):
 	np.save('fitnessesq3.pkl',allfits)
 	return pd.DataFrame(parents[0],index=cols,columns=cols)
 
-def p2q2(pkling=True):
-	mats = ['PAM100','OPTMAT']
+def p2q2n3(pkling=True):
+	mats = ['MATIO','MATOPT']
 	ROCdatax = pd.DataFrame(np.zeros((2,50)),index=mats)
-	optmat = pd.read_pickle('OPTMAT2.pkl')
+	matopt = pd.read_pickle('MATOPT.pkl')
 	for matnumber in range(len(mats)):
 		print('Pospairs:')
 		posscores = []
 		pospairlens = []
-		if mats[matnumber] == 'PAM100':
+		if mats[matnumber] == 'MATIO':
 			for pair in tqdm(pospairs):
-					score = smithwaterman.main('submats/PAM100',
+					score = smithwaterman.main('submats/MATIO',
 						seq1=pair[0], seq2=pair[1],
 						gapopen=-5, gapext=-3, js=True)
 					posscores.append(score)
 		else:
 			for pair in tqdm(pospairs):
-					score = smithwaterman.main(optmat,
+					score = smithwaterman.main(matopt,
 						seq1=pair[0], seq2=pair[1],
 						gapopen=-5, gapext=-3, js=True, fm=True)
 					posscores.append(score)	
 		negscores = []
 		negpairlens = []
 		print('Negpairs:')
-		if mats[matnumber] == 'PAM100':
+		if mats[matnumber] == 'MATIO':
 			for pair in tqdm(negpairs):
-					score = smithwaterman.main('submats/PAM100',
+					score = smithwaterman.main('submats/MATIO',
 						seq1=pair[0], seq2=pair[1],
 						gapopen=-5, gapext=-3, js=True)
 					negscores.append(score)
 		else:
 			for pair in tqdm(negpairs):
-					score = smithwaterman.main(optmat,
+					score = smithwaterman.main(matopt,
 						seq1=pair[0], seq2=pair[1],
 						gapopen=-5, gapext=-3, js=True, fm=True)
 					negscores.append(score)	
@@ -342,5 +342,5 @@ def p2q2(pkling=True):
 						len(negscores)
 			ROCdatax.iloc[matnumber,j] = FP
 	if pkling == True:
-		ROCdatax.to_pickle('p2q2data.pkl') # pickling at every iteration, in case it doesn't finish
+		ROCdatax.to_pickle('p2q3data.pkl') # pickling at every iteration, in case it doesn't finish
 	return ROCdatax
